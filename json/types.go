@@ -56,14 +56,14 @@ func (o *Object) String() string {
 	var b strings.Builder
 	fmt.Fprintf(&b, "{")
 	for _, k := range keys {
-		fmt.Fprintf(&b, "%s", o.values[k])
+		fmt.Fprintf(&b, "%s:%s,", k, o.values[k])
 	}
 	fmt.Fprintf(&b, "}")
 	return b.String()
 }
 
 func sortedKeys(v map[string]Value) []string {
-	keys := make([]string, len(v))
+	keys := make([]string, 0)
 	for k := range v {
 		keys = append(keys, k)
 	}
@@ -101,11 +101,11 @@ func (a *Array) Equals(v Value) bool {
 
 func (a *Array) String() string {
 	var b strings.Builder
-	fmt.Fprintf(&b, "{")
+	fmt.Fprintf(&b, "[")
 	for _, v := range a.values {
-		fmt.Fprintf(&b, "%s", v)
+		fmt.Fprintf(&b, "%s,", v)
 	}
-	fmt.Fprintf(&b, "}")
+	fmt.Fprintf(&b, "]")
 	return b.String()
 }
 
@@ -128,7 +128,7 @@ func (s *String) Equals(v Value) bool {
 }
 
 func (s *String) String() string {
-	return s.value
+	return `"` + s.value + `"`
 }
 
 // Number is very much like a C or Java number, except that the octal and hexadecimal formats are not used.
@@ -176,7 +176,7 @@ func (b *Bool) String() string {
 
 type Null struct{}
 
-var _ Value = &Null{}
+var NULL_OBJECT Value = &Null{}
 
 func (n *Null) Equals(v Value) bool {
 	if (n == nil) != (v == nil) {
